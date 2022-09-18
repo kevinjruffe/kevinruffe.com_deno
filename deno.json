@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "build": "deno run --allow-write --allow-read --allow-env --no-remote generator/generate.ts",
+    "fmt": "deno fmt generator",
+    "lint": "deno lint generator",
+    "newPost": "deno run --allow-env --allow-write --no-remote generator/newPost.ts",
+    "serve": "npx http-server -c-1 blog/built"
+  },
+  "importMap": "./vendor/import_map.json"
+}
