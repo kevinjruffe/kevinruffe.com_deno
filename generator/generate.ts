@@ -24,6 +24,7 @@ import {
 |
 */
 
+// Register languages that will have syntax highlighting.
 highlight.registerLanguage("bash", bash);
 highlight.registerLanguage("json", json);
 
