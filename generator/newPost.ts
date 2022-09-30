@@ -35,7 +35,7 @@ const newPostFile = `blog/src/${date.toISOString()}_${urlEncodedTitle}.md`;
 // Create the file using title as heading, followed by date.
 Deno.writeTextFileSync(
   newPostFile,
-  `# [${rawTitle}](/${urlEncodedTitle})\n<div class=\"post-date\">"${dateLocaleString}"</div>`,
+  `# [${rawTitle}](/${urlEncodedTitle})\n<div class=\"post-date\">${dateLocaleString}</div>`,
 );
 
 console.log(green("\nFile created!\n"));
