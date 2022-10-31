@@ -43,7 +43,7 @@ const POSTS_PER_PAGE = Number(Deno.env.get("POSTS_PER_PAGE") ?? 5);
 console.log(green("\nSTARTING THE SITE BUILD"));
 
 console.log(
-  "\nReading template and blog source files while also generating necessary directories.",
+  "\nReading template and blog source files while also generating necessary directories."
 );
 const [templateFiles, css, postFilenamesAndContents] = await Promise.all([
   readTemplateFiles(),
@@ -78,19 +78,19 @@ console.log(green("\nSITE BUILD COMPLETE!\n"));
 function addSyntaxHighlightingHTML(htmlContent: string): string {
   const htmlWithHighlightingClassAdded = htmlContent.replaceAll(
     '<code class="language-',
-    '<code class="hljs language-',
+    '<code class="hljs language-'
   );
 
   const codeBlocksInHtml = [
     ...htmlWithHighlightingClassAdded.matchAll(
-      /(?<=<pre><code(.*)>)[\s\S]*?(?=<\/code><\/pre>)/g,
+      /(?<=<pre><code(.*)>)[\s\S]*?(?=<\/code><\/pre>)/g
     ),
   ].map((codeBlock) => codeBlock[0]);
 
   return codeBlocksInHtml.reduce(
     (htmlPost, codeBlock) =>
       htmlPost.replace(codeBlock, highlight.highlightAuto(codeBlock).value),
-    htmlWithHighlightingClassAdded,
+    htmlWithHighlightingClassAdded
   );
 }
 
@@ -100,15 +100,15 @@ function addSyntaxHighlightingHTML(htmlContent: string): string {
 async function copyPreBuiltFilesOver(): Promise<void> {
   await Promise.all([
     copy("blog/fonts", "blog/built/public/fonts", { overwrite: true }),
-    copy("blog/images", "blog/built/public", { overwrite: true }),
+    copy("blog/images", "blog/built/public/images", { overwrite: true }),
     Deno.copyFile("blog/favicon.ico", "blog/built/public/favicon.ico"),
     Deno.copyFile(
       "blog/logo-header.webp",
-      "blog/built/public/logo-header.webp",
+      "blog/built/public/logo-header.webp"
     ),
     Deno.copyFile(
       "blog/og_shamrock.webp",
-      "blog/built/public/og_shamrock.webp",
+      "blog/built/public/og_shamrock.webp"
     ),
   ]).catch((err) =>
     handleFailure("Failed while copying pre-built files!", err)
@@ -130,12 +130,12 @@ async function createBuildOutputDirs(): Promise<void> {
  */
 async function generate404Page(
   css: string,
-  notFoundTemplate: ReadTemplateFiles["notFoundTemplate"],
+  notFoundTemplate: ReadTemplateFiles["notFoundTemplate"]
 ): Promise<void> {
   try {
     await Deno.writeTextFile(
       "blog/built/404.html",
-      notFoundTemplate.replace("/* STYLES */", css),
+      notFoundTemplate.replace("/* STYLES */", css)
     );
   } catch (err) {
     handleFailure("Failed while generating 404 page!", err);
@@ -149,7 +149,7 @@ async function generate404Page(
 async function generateBlog(
   templateFiles: ReadTemplateFiles,
   generatedPosts: GeneratedPost[],
-  css: string,
+  css: string
 ): Promise<void> {
   await Promise.all([
     copyPreBuiltFilesOver(),
@@ -164,12 +164,13 @@ async function generateBlog(
 function generatePostPages(
   css: string,
   generatedPosts: GeneratedPost[],
-  pageTemplate: ReadTemplateFiles["pageTemplate"],
+  pageTemplate: ReadTemplateFiles["pageTemplate"]
 ): void {
   try {
     generatedPosts.reduce((fileWrites, post, index) => {
       const ordinalIndex = index + 1;
-      const firstIndexPageNeeded = ordinalIndex === POSTS_PER_PAGE ||
+      const firstIndexPageNeeded =
+        ordinalIndex === POSTS_PER_PAGE ||
         (ordinalIndex === generatedPosts.length &&
           generatedPosts.length < POSTS_PER_PAGE);
       const noIndexPageNeeded = !(
@@ -180,8 +181,8 @@ function generatePostPages(
       fileWrites.push(
         Deno.writeTextFile(
           `blog/built/${post.path}.html`,
-          getPostPageHTML(post, css, pageTemplate),
-        ),
+          getPostPageHTML(post, css, pageTemplate)
+        )
       );
 
       if (noIndexPageNeeded) return fileWrites;
@@ -190,19 +191,19 @@ function generatePostPages(
         ordinalIndex,
         generatedPosts,
         css,
-        pageTemplate,
+        pageTemplate
       );
 
       fileWrites.push(
         Deno.writeTextFile(
           `blog/built/page/${Math.ceil(ordinalIndex / POSTS_PER_PAGE)}.html`,
-          fileContents,
-        ),
+          fileContents
+        )
       );
 
       if (firstIndexPageNeeded) {
         fileWrites.push(
-          Deno.writeTextFile("blog/built/index.html", fileContents),
+          Deno.writeTextFile("blog/built/index.html", fileContents)
         );
       }
 
@@ -218,7 +219,7 @@ function generatePostPages(
  */
 function getCombinedPostsHTML(
   posts: GeneratedPost[],
-  ordinalIndex: number,
+  ordinalIndex: number
 ): string {
   const listLength = posts.length;
 
@@ -237,11 +238,11 @@ function getCombinedPostsHTML(
  * Creates blog post path's and URL from filenames and HTML contents.
  */
 function getGeneratedPosts(
-  postFilenamesAndContents: ReadSourceBlogFilenamesAndPosts,
+  postFilenamesAndContents: ReadSourceBlogFilenamesAndPosts
 ): GeneratedPost[] {
   return postFilenamesAndContents.srcPostFilenames.map((filename, index) => {
     const content = getMarkdownBasedHTML(
-      postFilenamesAndContents.srcPostContents[index],
+      postFilenamesAndContents.srcPostContents[index]
     );
 
     const path = getPostUrlPathFromFilename(filename);
@@ -261,14 +262,14 @@ function getIndexPageHTML(
   currentPost: number,
   posts: GeneratedPost[],
   css: string,
-  template: string,
+  template: string
 ): string {
   return template
     .replace("TITLE_TO_REPLACE", "Blog")
     .replace(
       "<!-- CONTENTS -->",
       getCombinedPostsHTML(posts, currentPost) +
-        getPaginationButtonHTML(currentPost, posts.length),
+        getPaginationButtonHTML(currentPost, posts.length)
     )
     .replace("/* STYLES */", css);
 }
@@ -307,13 +308,11 @@ function getNextButtonHTML(ordinalIndex: number, listLength: number): string {
  */
 function getPaginationButtonHTML(
   ordinalIndex: number,
-  listLength: number,
+  listLength: number
 ): string {
-  return `<div class="pagination-buttons">${
-    getPreviousButtonHTML(
-      ordinalIndex,
-    )
-  }${getNextButtonHTML(ordinalIndex, listLength)}</div>`;
+  return `<div class="pagination-buttons">${getPreviousButtonHTML(
+    ordinalIndex
+  )}${getNextButtonHTML(ordinalIndex, listLength)}</div>`;
 }
 
 /**
@@ -323,7 +322,7 @@ function getPaginationButtonHTML(
 function getPostPageHTML(
   post: GeneratedPost,
   css: string,
-  template: string,
+  template: string
 ): string {
   return template
     .replaceAll("TITLE_TO_REPLACE", post.title)
@@ -336,10 +335,10 @@ function getPostPageHTML(
  */
 function getPostTitleFromPathAndContents(
   postPath: GeneratedPost["path"],
-  postContent: GeneratedPost["content"],
+  postContent: GeneratedPost["content"]
 ): GeneratedPost["title"] {
   const regex = new RegExp(
-    `(?<=<a href="\\/${postPath}">)[\\S\\s]*?(?=<\\/a>)`,
+    `(?<=<a href="\\/${postPath}">)[\\S\\s]*?(?=<\\/a>)`
   );
 
   return (postContent.match(regex) ?? [])[0] ?? "Blog";
@@ -366,11 +365,9 @@ function getPostUrlPathFromFilename(filename: string): string {
 function getPreviousButtonHTML(ordinalIndex: number): string {
   const visibility = ordinalIndex > POSTS_PER_PAGE ? "visible" : "hidden";
 
-  return `<a style="visibility: ${visibility}" href="/page/${
-    Math.ceil(
-      (ordinalIndex - POSTS_PER_PAGE) / POSTS_PER_PAGE,
-    )
-  }">&lt;&lt;&lt;</a>`;
+  return `<a style="visibility: ${visibility}" href="/page/${Math.ceil(
+    (ordinalIndex - POSTS_PER_PAGE) / POSTS_PER_PAGE
+  )}">&lt;&lt;&lt;</a>`;
 }
 
 /**
@@ -393,9 +390,7 @@ async function readAndMinifyCSS(): Promise<string> {
 /**
  * Gets blog post names and contents.
  */
-async function readPostFilenamesAndContents(): Promise<
-  ReadSourceBlogFilenamesAndPosts
-> {
+async function readPostFilenamesAndContents(): Promise<ReadSourceBlogFilenamesAndPosts> {
   // Reverse names to put newest posts first.
   const srcPostFilenames = [...Deno.readDirSync("blog/src")]
     .map((fileInfo) => fileInfo.name)
@@ -405,7 +400,7 @@ async function readPostFilenamesAndContents(): Promise<
   const srcPostContents = await Promise.all(
     srcPostFilenames.map((fileName) =>
       Deno.readTextFile(`blog/src/${fileName}`)
-    ),
+    )
   );
 
   return { srcPostFilenames, srcPostContents };
