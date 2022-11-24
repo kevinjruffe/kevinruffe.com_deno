@@ -1,9 +1,9 @@
 {
   "imports": {
     "https://esm.sh/clean-css@5.3.1": "./esm.sh/clean-css@5.3.1.js",
-    "https://esm.sh/highlight.js@11.6.0/lib/languages/bash": "./esm.sh/highlight.js@11.6.0/lib/languages/bash.js",
-    "https://esm.sh/highlight.js@11.6.0/lib/languages/json": "./esm.sh/highlight.js@11.6.0/lib/languages/json.js",
-    "https://esm.sh/marked@4.1.0": "./esm.sh/marked@4.1.0.js",
+    "https://esm.sh/highlight.js@11.7.0/lib/languages/bash": "./esm.sh/highlight.js@11.7.0/lib/languages/bash.js",
+    "https://esm.sh/highlight.js@11.7.0/lib/languages/json": "./esm.sh/highlight.js@11.7.0/lib/languages/json.js",
+    "https://esm.sh/marked@4.2.3": "./esm.sh/marked@4.2.3.js",
     "https://deno.land/": "./deno.land/",
     "https://esm.sh/": "./esm.sh/"
   },
