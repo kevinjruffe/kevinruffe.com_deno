@@ -265,7 +265,7 @@ function getIndexPageHTML(
   template: string
 ): string {
   return template
-    .replace("TITLE_TO_REPLACE", "Blog")
+    .replaceAll("TITLE_TO_REPLACE", "Blog")
     .replace(
       "<!-- CONTENTS -->",
       getCombinedPostsHTML(posts, currentPost) +
